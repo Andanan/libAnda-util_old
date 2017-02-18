@@ -6,7 +6,7 @@
 IMPORTANT: This temporary licence will soon be replaced with a proper licence.
 
 Until not specified differently, you are not allowed to modify the code of this project. 
-You may also not distribute the source code or the compiled files without this license file.
+You may also not distribute the source code or the compiled files of the library without this license file.
 
 You are however allowed to use this library in your software, as long as your software is not commercial.
 It is not obligatory to include the source code of this library in any distribution of your product. 
