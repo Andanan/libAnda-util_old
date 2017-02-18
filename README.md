@@ -9,7 +9,7 @@ The util package is a collection of basic, language-improving tool classes.
 * **ArrayUtil**  
   An extension to the [ArrayUtil](https://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/ArrayUtils.html) class of [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/)
 
-## Dependencies
+### Dependencies
 * [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/)
 
 
