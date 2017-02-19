@@ -3,6 +3,8 @@
 libAnda is a collection of useful Java-classes as used by Andanan in his projects.
 The util package is a collection of basic, language-improving tool classes.
 
+[Documentation](https://andanan.github.io/libAnda-util/)
+
 ### Some contained Classes:
 * **OS**  
   Contains...
