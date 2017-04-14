@@ -1,1163 +1,481 @@
 package libanda.util;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-/*	
- * 
- * Methods:
- * 		equals(arrayA, arrayB)
- * 		delete(array, index)
- * 		addEntry(array, entry, index)
- * 		addEntry(array, entry) (write to end of array)
- * 		move(array, indexFrom, indexTo)
- * 		toString(array)
- * 	
- * 		To Add:
- * 	
- * */
+/* Methods:
+ * 		insert(array, entry, index)
+ * 		prepend(array, entry)
+ */
+
 /**
- * The SAM-Class (Support-Array-Methods-Class) provides helpful methods, which
- * are useful when you are working with arrays.
+ * The ArrayUtil-class provides helpful methods, which are useful when working
+ * with arrays.<br />
+ * This class is meant to be an extension to
+ * {@link org.apache.commons.lang3.ArrayUtils}
  * 
- * @author Florian Stricker
- * @version 1.0.2015.10.10
+ * @author Andanan
+ * @lastModified 2017-02-26
+ * @version 1.1
+ * @see org.apache.commons.lang3.ArrayUtils
  */
 public class ArrayUtil {
 
 	/*
-	 * For: Object, boolean, char, String, byte, short, int, long, float, double
-	 * Comparison of Array-Contents
+	 * For: Object, boolean, char, String, byte, short, int, long, float and
+	 * double insert "entry" in "array" on "indexPos"
 	 * 
 	 */
 
 	/**
-	 * Checks if two complex arrays have the same content.
+	 * Insert an entry to the given array at the given index. The type of the
+	 * entry and array can be an arbitrary object type.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" and inserts "entry" at index "indexPos". If the
+	 * "inputArray" is null, null is returned. If the "inputArray" is specified
+	 * but the "entry" is null, a clone of "inputArray" is returned.<br />
+	 * If "indexPos" is < 0 or is >= "inputArray.length" the "indexPos" is set
+	 * to either 0 or "inputArray.length"<br />
 	 * 
-	 * @param arrayA
-	 *            The first array
-	 * @param arrayB
-	 *            The second array
-	 * @return true if the two arrays have the same length and their content is
-	 *         equal
-	 */
-	public static <T, C extends T> boolean equals(T[] arrayA, C[] arrayB) {
-		boolean areEqual;
-		if (arrayA == arrayB) {
-			areEqual = true;
-		} else if (arrayA == null || arrayB == null || arrayA.length != arrayB.length) {
-			areEqual = false;
-		} else {
-			areEqual = true;
-			for (int i = 0; i < arrayA.length; i++) {
-				if (!arrayA[i].equals(arrayB[i])){
-					areEqual = false;
-					break;
-				}
-			}
-		}
-		return areEqual;
-	}
-
-	/**
-	 * Checks if two boolean-arrays have the same content.
-	 * 
-	 * @param arrayA
-	 *            The first array
-	 * @param arrayB
-	 *            The second array
-	 * @return true if the two arrays have the same length and their content is
-	 *         equal
-	 */
-	public static boolean equals(boolean[] arrayA, boolean[] arrayB) {
-		/*
-		 * if (arrayA == arrayB) { return true; } else if (arrayA == null ||
-		 * arrayB == null || arrayA.length != arrayB.length) { return false; }
-		 * else { for (int i = 0; i < arrayA.length; i++) { if (!(arrayA[i] ==
-		 * arrayB[i])) return false; } return true; }
-		 */
-		return equals(ArrayUtils.toObject(arrayA), ArrayUtils.toObject(arrayB));
-	}
-
-	/**
-	 * Checks if two char-arrays have the same content.
-	 * 
-	 * @param arrayA
-	 *            The first array
-	 * @param arrayB
-	 *            The second array
-	 * @return true if the two arrays have the same length and their content is
-	 *         equal
-	 */
-	public static boolean equals(char[] arrayA, char[] arrayB) {
-		/*
-		 * if (arrayA == arrayB) { return true; } else if (arrayA == null ||
-		 * arrayB == null || arrayA.length != arrayB.length) { return false; }
-		 * else { for (int i = 0; i < arrayA.length; i++) { if (!(arrayA[i] ==
-		 * arrayB[i])) return false; } return true; }
-		 */
-		return equals(ArrayUtils.toObject(arrayA), ArrayUtils.toObject(arrayB));
-	}
-
-	/**
-	 * Checks if two byte-arrays have the same content.
-	 * 
-	 * @param arrayA
-	 *            The first array
-	 * @param arrayB
-	 *            The second array
-	 * @return true if the two arrays have the same length and their content is
-	 *         equal
-	 */
-	public static boolean equals(byte[] arrayA, byte[] arrayB) {
-		/*
-		 * if (arrayA == arrayB) { return true; } else if (arrayA == null ||
-		 * arrayB == null || arrayA.length != arrayB.length) { return false; }
-		 * else { for (int i = 0; i < arrayA.length; i++) { if (!(arrayA[i] ==
-		 * arrayB[i])) return false; } return true; }
-		 */
-		return equals(ArrayUtils.toObject(arrayA), ArrayUtils.toObject(arrayB));
-	}
-
-	/**
-	 * Checks if two short-arrays have the same content.
-	 * 
-	 * @param arrayA
-	 *            The first array
-	 * @param arrayB
-	 *            The second array
-	 * @return true if the two arrays have the same length and their content is
-	 *         equal
-	 */
-	public static boolean equals(short[] arrayA, short[] arrayB) {
-		/*
-		 * if (arrayA == arrayB) { return true; } else if (arrayA == null ||
-		 * arrayB == null || arrayA.length != arrayB.length) { return false; }
-		 * else { for (int i = 0; i < arrayA.length; i++) { if (!(arrayA[i] ==
-		 * arrayB[i])) return false; } return true; }
-		 */
-		return equals(ArrayUtils.toObject(arrayA), ArrayUtils.toObject(arrayB));
-	}
-
-	/**
-	 * Checks if two int-arrays have the same content.
-	 * 
-	 * @param arrayA
-	 *            The first array
-	 * @param arrayB
-	 *            The second array
-	 * @return true if the two arrays have the same length and their content is
-	 *         equal
-	 */
-	public static boolean equals(int[] arrayA, int[] arrayB) {
-		/*
-		 * if (arrayA == arrayB) { return true; } else if (arrayA == null ||
-		 * arrayB == null || arrayA.length != arrayB.length) { return false; }
-		 * else { for (int i = 0; i < arrayA.length; i++) { if (!(arrayA[i] ==
-		 * arrayB[i])) return false; } return true; }
-		 */
-		return equals(ArrayUtils.toObject(arrayA), ArrayUtils.toObject(arrayB));
-	}
-
-	/**
-	 * Checks if two long-arrays have the same content.
-	 * 
-	 * @param arrayA
-	 *            The first array
-	 * @param arrayB
-	 *            The second array
-	 * @return true if the two arrays have the same length and their content is
-	 *         equal
-	 */
-	public static boolean equals(long[] arrayA, long[] arrayB) {
-		/*
-		 * if (arrayA == arrayB) { return true; } else if (arrayA == null ||
-		 * arrayB == null || arrayA.length != arrayB.length) { return false; }
-		 * else { for (int i = 0; i < arrayA.length; i++) { if (!(arrayA[i] ==
-		 * arrayB[i])) return false; } return true; }
-		 */
-		return equals(ArrayUtils.toObject(arrayA), ArrayUtils.toObject(arrayB));
-	}
-
-	/**
-	 * Checks if two float-arrays have the same content.
-	 * 
-	 * @param arrayA
-	 *            The first array
-	 * @param arrayB
-	 *            The second array
-	 * @return true if the two arrays have the same length and their content is
-	 *         equal
-	 */
-	public static boolean equals(float[] arrayA, float[] arrayB) {
-		/*
-		 * if (arrayA == arrayB) { return true; } else if (arrayA == null ||
-		 * arrayB == null || arrayA.length != arrayB.length) { return false; }
-		 * else { for (int i = 0; i < arrayA.length; i++) { if (!(arrayA[i] ==
-		 * arrayB[i])) return false; } return true; }
-		 */
-		return equals(ArrayUtils.toObject(arrayA), ArrayUtils.toObject(arrayB));
-	}
-
-	/**
-	 * Checks if two double-arrays have the same content.
-	 * 
-	 * @param arrayA
-	 *            The first array
-	 * @param arrayB
-	 *            The second array
-	 * @return true if the two arrays have the same length and their content is
-	 *         equal
-	 */
-	public static boolean equals(double[] arrayA, double[] arrayB) {
-		/*
-		 * if (arrayA == arrayB) { return true; } else if (arrayA == null ||
-		 * arrayB == null || arrayA.length != arrayB.length) { return false; }
-		 * else { for (int i = 0; i < arrayA.length; i++) { if (!(arrayA[i] ==
-		 * arrayB[i])) return false; } return true; }
-		 */
-		return equals(ArrayUtils.toObject(arrayA), ArrayUtils.toObject(arrayB));
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/*
-	 * For: Object, boolean, char, String, byte, short, int, long, float, double
-	 * Delete entry from Array
-	 * 
-	 */
-
-	/**
-	 * Deletes an entry from the given array using its index.
-	 * 
-	 * @param array
-	 *            The original array
-	 * @param index
-	 *            The index of the entry which will then be deleted
-	 * @return the new array without the specified entry or the original array
-	 *         if the passed index was invalid.
-	 */
-	public static <T> T[] delete(T[] array, int index) {
-		if (index < 0 || index >= array.length) {
-			return array;
-		}
-		@SuppressWarnings("unchecked")
-		T[] newArray = (T[]) Array.newInstance(array.getClass(), array.length - 1);
-		List<T> list = new ArrayList<>(Arrays.asList(array));
-		list.remove(index);
-		return list.toArray(newArray);
-	}
-
-	/**
-	 * Deletes an entry from the given array using its index.
-	 * 
-	 * @param array
-	 *            The original array
-	 * @param index
-	 *            The index of the entry which will then be deleted
-	 * @return the new array without the specified entry or the original array
-	 *         if the passed index was invalid.
-	 */
-	public static boolean[] delete(boolean[] array, int index) {
-		/*
-		 * if (index < 0 || index >= array.length) { return array; } boolean[]
-		 * newArray = new boolean[array.length - 1]; for (int i = 0; i < index;
-		 * i++) newArray[i] = array[i]; for (int i = index; i < newArray.length;
-		 * i++) newArray[i] = array[i + 1]; return newArray;
-		 */
-		Boolean[] result = delete(ArrayUtils.toObject(array), index);
-		return ArrayUtils.toPrimitive(result);
-	}
-
-	/**
-	 * Deletes an entry from the given array using its index.
-	 * 
-	 * @param array
-	 *            The original array
-	 * @param index
-	 *            The index of the entry which will then be deleted
-	 * @return the new array without the specified entry or the original array
-	 *         if the passed index was invalid.
-	 */
-	public static char[] delete(char[] array, int index) {
-		/*
-		 * if (index < 0 || index >= array.length) { return array; } char[]
-		 * newArray = new char[array.length - 1]; for (int i = 0; i < index;
-		 * i++) newArray[i] = array[i]; for (int i = index; i < newArray.length;
-		 * i++) newArray[i] = array[i + 1]; return newArray;
-		 */
-		Character[] result = delete(ArrayUtils.toObject(array), index);
-		return ArrayUtils.toPrimitive(result);
-	}
-
-	/**
-	 * Deletes an entry from the given array using its index.
-	 * 
-	 * @param array
-	 *            The original array
-	 * @param index
-	 *            The index of the entry which will then be deleted
-	 * @return the new array without the specified entry or the original array
-	 *         if the passed index was invalid.
-	 */
-	public static byte[] delete(byte[] array, int index) {
-		/*
-		 * if (index < 0 || index >= array.length) { return array; } byte[]
-		 * newArray = new byte[array.length - 1]; for (int i = 0; i < index;
-		 * i++) newArray[i] = array[i]; for (int i = index; i < newArray.length;
-		 * i++) newArray[i] = array[i + 1]; return newArray;
-		 */
-		Byte[] result = delete(ArrayUtils.toObject(array), index);
-		return ArrayUtils.toPrimitive(result);
-	}
-
-	/**
-	 * Deletes an entry from the given array using its index.
-	 * 
-	 * @param array
-	 *            The original array
-	 * @param index
-	 *            The index of the entry which will then be deleted
-	 * @return the new array without the specified entry or the original array
-	 *         if the passed index was invalid.
-	 */
-	public static short[] delete(short[] array, int index) {
-		/*
-		 * if (index < 0 || index >= array.length) { return array; } short[]
-		 * newArray = new short[array.length - 1]; for (int i = 0; i < index;
-		 * i++) newArray[i] = array[i]; for (int i = index; i < newArray.length;
-		 * i++) newArray[i] = array[i + 1]; return newArray;
-		 */
-		Short[] result = delete(ArrayUtils.toObject(array), index);
-		return ArrayUtils.toPrimitive(result);
-	}
-
-	/**
-	 * Deletes an entry from the given array using its index.
-	 * 
-	 * @param array
-	 *            The original array
-	 * @param index
-	 *            The index of the entry which will then be deleted
-	 * @return the new array without the specified entry or the original array
-	 *         if the passed index was invalid.
-	 */
-	public static int[] delete(int[] array, int index) {
-		/*
-		 * if (index < 0 || index >= array.length) { return array; } int[]
-		 * newArray = new int[array.length - 1]; for (int i = 0; i < index; i++)
-		 * newArray[i] = array[i]; for (int i = index; i < newArray.length; i++)
-		 * newArray[i] = array[i + 1]; return newArray;
-		 */
-		Integer[] result = delete(ArrayUtils.toObject(array), index);
-		return ArrayUtils.toPrimitive(result);
-	}
-
-	/**
-	 * Deletes an entry from the given array using its index.
-	 * 
-	 * @param array
-	 *            The original array
-	 * @param index
-	 *            The index of the entry which will then be deleted
-	 * @return the new array without the specified entry or the original array
-	 *         if the passed index was invalid.
-	 */
-	public static long[] delete(long[] array, int index) {
-		/*
-		 * if (index < 0 || index >= array.length) { return array; } long[]
-		 * newArray = new long[array.length - 1]; for (int i = 0; i < index;
-		 * i++) newArray[i] = array[i]; for (int i = index; i < newArray.length;
-		 * i++) newArray[i] = array[i + 1]; return newArray;
-		 */
-		Long[] result = delete(ArrayUtils.toObject(array), index);
-		return ArrayUtils.toPrimitive(result);
-	}
-
-	/**
-	 * Deletes an entry from the given array using its index.
-	 * 
-	 * @param array
-	 *            The original array
-	 * @param index
-	 *            The index of the entry which will then be deleted
-	 * @return the new array without the specified entry or the original array
-	 *         if the passed index was invalid.
-	 */
-	public static float[] delete(float[] array, int index) {
-		/*
-		 * if (index < 0 || index >= array.length) { return array; } float[]
-		 * newArray = new float[array.length - 1]; for (int i = 0; i < index;
-		 * i++) newArray[i] = array[i]; for (int i = index; i < newArray.length;
-		 * i++) newArray[i] = array[i + 1]; return newArray;
-		 */
-		Float[] result = delete(ArrayUtils.toObject(array), index);
-		return ArrayUtils.toPrimitive(result);
-	}
-
-	/**
-	 * Deletes an entry from the given array using its index.
-	 * 
-	 * @param array
-	 *            The original array
-	 * @param index
-	 *            The index of the entry which will then be deleted
-	 * @return the new array without the specified entry or the original array
-	 *         if the passed index was invalid.
-	 */
-	public static double[] delete(double[] array, int index) {
-		/*
-		 * if (index < 0 || index >= array.length) { return array; } double[]
-		 * newArray = new double[array.length - 1]; for (int i = 0; i < index;
-		 * i++) newArray[i] = array[i]; for (int i = index; i < newArray.length;
-		 * i++) newArray[i] = array[i + 1]; return newArray;
-		 */
-		Double[] result = delete(ArrayUtils.toObject(array), index);
-		return ArrayUtils.toPrimitive(result);
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/*
-	 * For: Object, boolean, char, String, byte, short, int, long, float, double
-	 * add "entry" in "array" on "indexPos"
-	 * 
-	 */
-
-	/**
-	 * Adds an entry at a specified index to a given array.
-	 * 
-	 * @param array
+	 * @param inputArray
 	 *            The array which will be extended
 	 * @param entry
 	 *            The entry which will be added
 	 * @param indexPos
 	 *            The position at which the entry will be added
-	 * @return the extended array, or the original array in case the indexPos
-	 *         was negative.
+	 * @return A new array with the content of "inputArray" and "entry" inserted
+	 *         to it at index "indexPos", null if "inputArray" was null or a
+	 *         clone of "inputArray" if "entry" was null.
 	 */
-	public static <T> T[] add(T[] array, T entry, int indexPos) {
-		if (indexPos < 0) {
-			return array;
+	public static <T> T[] insert(final T[] inputArray, final T entry, int indexPos) {
+		List<T> list;
+		T[] result;
+		if (inputArray == null) {
+			result = null;
+		} else if (entry == null) {
+			return inputArray.clone();
+		} else {
+			list = new LinkedList<>(Arrays.asList(inputArray));
+			if (indexPos < 0) {
+				indexPos = 0;
+			} else if (indexPos >= inputArray.length) {
+				indexPos = inputArray.length;
+			}
+			list.add(indexPos, entry);
+			result = list.toArray(inputArray);
 		}
-		if (indexPos > array.length){
-			indexPos = array.length;
-		}
-		List<T> list = new ArrayList<>(Arrays.asList(array));
-		list.add(indexPos, entry);
-		return list.toArray(array);
+		return result;
 	}
 
 	/**
-	 * Appends an entry to the given array
+	 * Insert a boolean entry to the given boolean array at the given
+	 * index.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" and inserts "entry" at index "indexPos". If the
+	 * "inputArray" is null, null is returned. If the "inputArray" is specified
+	 * but the "entry" is null, a clone of "inputArray" is returned.<br />
+	 * If "indexPos" is < 0 or is >= "inputArray.length" the "indexPos" is set
+	 * to either 0 or "inputArray.length"<br />
 	 * 
-	 * @param array
+	 * @param inputArray
 	 *            The array which will be extended
 	 * @param entry
-	 *            The entry which will be appended
-	 * @return the extended array.
+	 *            The entry which will be added
+	 * @param indexPos
+	 *            The position at which the entry will be added
+	 * @return A new array with the content of "inputArray" and "entry" inserted
+	 *         to it at index "indexPos", null if "inputArray" was null or a
+	 *         clone of "inputArray" if "entry" was null.
 	 */
-	public static <T> T[] append(T[] array, T entry) {
-		return add(array, entry, array.length);
+	public static boolean[] insert(boolean[] inputArray, boolean entry, int indexPos) {
+		Boolean[] objArray = ArrayUtils.toObject(inputArray);
+		Boolean[] newArray = insert(objArray, entry, indexPos);
+		return ArrayUtils.toPrimitive(newArray);
 	}
 
 	/**
-	 * Prepends an entry to the given array
+	 * Insert a char entry to the given char array at the given index.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" and inserts "entry" at index "indexPos". If the
+	 * "inputArray" is null, null is returned. If the "inputArray" is specified
+	 * but the "entry" is null, a clone of "inputArray" is returned.<br />
+	 * If "indexPos" is < 0 or is >= "inputArray.length" the "indexPos" is set
+	 * to either 0 or "inputArray.length"<br />
 	 * 
-	 * @param array
+	 * @param inputArray
+	 *            The array which will be extended
+	 * @param entry
+	 *            The entry which will be added
+	 * @param indexPos
+	 *            The position at which the entry will be added
+	 * @return A new array with the content of "inputArray" and "entry" inserted
+	 *         to it at index "indexPos", null if "inputArray" was null or a
+	 *         clone of "inputArray" if "entry" was null.
+	 */
+	public static char[] insert(char[] inputArray, char entry, int indexPos) {
+		Character[] objArray = ArrayUtils.toObject(inputArray);
+		Character[] newArray = insert(objArray, entry, indexPos);
+		return ArrayUtils.toPrimitive(newArray);
+	}
+
+	/**
+	 * Insert a byte entry to the given byte array at the given index.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" and inserts "entry" at index "indexPos". If the
+	 * "inputArray" is null, null is returned. If the "inputArray" is specified
+	 * but the "entry" is null, a clone of "inputArray" is returned.<br />
+	 * If "indexPos" is < 0 or is >= "inputArray.length" the "indexPos" is set
+	 * to either 0 or "inputArray.length"<br />
+	 * 
+	 * @param inputArray
+	 *            The array which will be extended
+	 * @param entry
+	 *            The entry which will be added
+	 * @param indexPos
+	 *            The position at which the entry will be added
+	 * @return A new array with the content of "inputArray" and "entry" inserted
+	 *         to it at index "indexPos", null if "inputArray" was null or a
+	 *         clone of "inputArray" if "entry" was null.
+	 */
+	public static byte[] insert(byte[] inputArray, byte entry, int indexPos) {
+		Byte[] objArray = ArrayUtils.toObject(inputArray);
+		Byte[] newArray = insert(objArray, entry, indexPos);
+		return ArrayUtils.toPrimitive(newArray);
+	}
+
+	/**
+	 * Insert a short entry to the given short array at the given index.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" and inserts "entry" at index "indexPos". If the
+	 * "inputArray" is null, null is returned. If the "inputArray" is specified
+	 * but the "entry" is null, a clone of "inputArray" is returned.<br />
+	 * If "indexPos" is < 0 or is >= "inputArray.length" the "indexPos" is set
+	 * to either 0 or "inputArray.length"<br />
+	 * 
+	 * @param inputArray
+	 *            The array which will be extended
+	 * @param entry
+	 *            The entry which will be added
+	 * @param indexPos
+	 *            The position at which the entry will be added
+	 * @return A new array with the content of "inputArray" and "entry" inserted
+	 *         to it at index "indexPos", null if "inputArray" was null or a
+	 *         clone of "inputArray" if "entry" was null.
+	 */
+	public static short[] insert(short[] inputArray, short entry, int indexPos) {
+		Short[] objArray = ArrayUtils.toObject(inputArray);
+		Short[] newArray = insert(objArray, entry, indexPos);
+		return ArrayUtils.toPrimitive(newArray);
+	}
+
+	/**
+	 * Insert a int entry to the given int array at the given index.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" and inserts "entry" at index "indexPos". If the
+	 * "inputArray" is null, null is returned. If the "inputArray" is specified
+	 * but the "entry" is null, a clone of "inputArray" is returned.<br />
+	 * If "indexPos" is < 0 or is >= "inputArray.length" the "indexPos" is set
+	 * to either 0 or "inputArray.length"<br />
+	 * 
+	 * @param inputArray
+	 *            The array which will be extended
+	 * @param entry
+	 *            The entry which will be added
+	 * @param indexPos
+	 *            The position at which the entry will be added
+	 * @return A new array with the content of "inputArray" and "entry" inserted
+	 *         to it at index "indexPos", null if "inputArray" was null or a
+	 *         clone of "inputArray" if "entry" was null.
+	 */
+	public static int[] insert(int[] inputArray, int entry, int indexPos) {
+		Integer[] objArray = ArrayUtils.toObject(inputArray);
+		Integer[] newArray = insert(objArray, entry, indexPos);
+		return ArrayUtils.toPrimitive(newArray);
+	}
+
+	/**
+	 * Insert a long entry to the given long array at the given index.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" and inserts "entry" at index "indexPos". If the
+	 * "inputArray" is null, null is returned. If the "inputArray" is specified
+	 * but the "entry" is null, a clone of "inputArray" is returned.<br />
+	 * If "indexPos" is < 0 or is >= "inputArray.length" the "indexPos" is set
+	 * to either 0 or "inputArray.length"<br />
+	 * 
+	 * @param inputArray
+	 *            The array which will be extended
+	 * @param entry
+	 *            The entry which will be added
+	 * @param indexPos
+	 *            The position at which the entry will be added
+	 * @return A new array with the content of "inputArray" and "entry" inserted
+	 *         to it at index "indexPos", null if "inputArray" was null or a
+	 *         clone of "inputArray" if "entry" was null.
+	 */
+	public static long[] insert(long[] inputArray, long entry, int indexPos) {
+		Long[] objArray = ArrayUtils.toObject(inputArray);
+		Long[] newArray = insert(objArray, entry, indexPos);
+		return ArrayUtils.toPrimitive(newArray);
+	}
+
+	/**
+	 * Insert a float entry to the given float array at the given index.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" and inserts "entry" at index "indexPos". If the
+	 * "inputArray" is null, null is returned. If the "inputArray" is specified
+	 * but the "entry" is null, a clone of "inputArray" is returned.<br />
+	 * If "indexPos" is < 0 or is >= "inputArray.length" the "indexPos" is set
+	 * to either 0 or "inputArray.length"<br />
+	 * 
+	 * @param inputArray
+	 *            The array which will be extended
+	 * @param entry
+	 *            The entry which will be added
+	 * @param indexPos
+	 *            The position at which the entry will be added
+	 * @return A new array with the content of "inputArray" and "entry" inserted
+	 *         to it at index "indexPos", null if "inputArray" was null or a
+	 *         clone of "inputArray" if "entry" was null.
+	 */
+	public static float[] insert(float[] inputArray, float entry, int indexPos) {
+		Float[] objArray = ArrayUtils.toObject(inputArray);
+		Float[] newArray = insert(objArray, entry, indexPos);
+		return ArrayUtils.toPrimitive(newArray);
+	}
+
+	/**
+	 * Insert a double entry to the given double array at the given index.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" and inserts "entry" at index "indexPos". If the
+	 * "inputArray" is null, null is returned. If the "inputArray" is specified
+	 * but the "entry" is null, a clone of "inputArray" is returned.<br />
+	 * If "indexPos" is < 0 or is >= "inputArray.length" the "indexPos" is set
+	 * to either 0 or "inputArray.length"<br />
+	 * 
+	 * @param inputArray
+	 *            The array which will be extended
+	 * @param entry
+	 *            The entry which will be added
+	 * @param indexPos
+	 *            The position at which the entry will be added
+	 * @return A new array with the content of "inputArray" and "entry" inserted
+	 *         to it at index "indexPos", null if "inputArray" was null or a
+	 *         clone of "inputArray" if "entry" was null.
+	 */
+	public static double[] insert(double[] inputArray, double entry, int indexPos) {
+		Double[] objArray = ArrayUtils.toObject(inputArray);
+		Double[] newArray = insert(objArray, entry, indexPos);
+		return ArrayUtils.toPrimitive(newArray);
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/*
+	 * For: Object, boolean, char, String, byte, short, int, long, float and
+	 * double prepend "entry" to "array"
+	 * 
+	 */
+
+	/**
+	 * Prepends an entry to the given array. The type of the entry and array can
+	 * be an arbitrary object type.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" but prepends the entry "entry". If the "inputArray"
+	 * is null, null is returned. If the "inputArray" is specified but "entry"
+	 * is null, a clone of "inputArray" is returned.<br />
+	 * <br />
+	 * This internally calls ArrayUtil.insert(inputArray, entry, 0);
+	 * 
+	 * @param inputArray
 	 *            The array which will be extended
 	 * @param entry
 	 *            The entry which will be prepended
-	 * @return
+	 * @return A new array with the content of "inputArray" and "entry"
+	 *         prepended to it, null if "inputArray" was null or a clone of
+	 *         "inputArray" if "entry" was null.
+	 * @see ArrayUtil#insert(T[], T, int)
 	 */
-	public static <T> T[] prepend(T[] array, T entry) {
-		return add(array, entry, 0);
+	public static <T> T[] prepend(T[] inputArray, T entry) {
+		return insert(inputArray, entry, 0);
 	}
 
 	/**
-	 * Adds an entry at a specified index to a given array.
+	 * Prepends a boolean entry to the given boolean array.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" but prepends the entry "entry". If the "inputArray"
+	 * is null, null is returned. If the "inputArray" is specified but "entry"
+	 * is null, a clone of "inputArray" is returned.<br />
+	 * <br />
+	 * This internally calls ArrayUtil.insert(inputArray, entry, 0);
 	 * 
-	 * @param array
+	 * @param inputArray
 	 *            The array which will be extended
 	 * @param entry
-	 *            The entry which will be added
-	 * @param indexPos
-	 *            The position at which the entry will be added
-	 * @return the extended array, or the original array in case the indexPos
-	 *         was negative.
+	 *            The entry which will be prepended
+	 * @return A new array with the content of "inputArray" and "entry"
+	 *         prepended to it, null if "inputArray" was null or a clone of
+	 *         "inputArray" if "entry" was null.
+	 * @see ArrayUtil#insert(boolean[], boolean, int)
 	 */
-	public static boolean[] add(boolean[] array, boolean entry, int indexPos) {
-		/*if (indexPos < 0) {
-			return array;
-		}
-		boolean[] newArray = new boolean[array.length + 1];
-		if (indexPos >= array.length) {
-			for (int i = 0; i < array.length; i++)
-				newArray[i] = array[i];
-			newArray[newArray.length - 1] = entry;
-		} else {
-			for (int i = 0; i < indexPos; i++)
-				newArray[i] = array[i];
-			newArray[indexPos] = entry;
-			for (int i = indexPos + 1; i < newArray.length; i++)
-				newArray[i] = array[i - 1];
-		}
-		return newArray;*/
-		Boolean[] objArray = ArrayUtils.toObject(array);
-		Boolean[] newArray = add(objArray, entry, indexPos);
-		return ArrayUtils.toPrimitive(newArray);
-	} 
+	public static boolean[] prepend(boolean[] inputArray, boolean entry) {
+		return insert(inputArray, entry, 0);
+	}
 
 	/**
-	 * Adds an entry to end of the given array.
+	 * Prepends a char entry to the given char array.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" but prepends the entry "entry". If the "inputArray"
+	 * is null, null is returned. If the "inputArray" is specified but "entry"
+	 * is null, a clone of "inputArray" is returned.<br />
+	 * <br />
+	 * This internally calls ArrayUtil.insert(inputArray, entry, 0);
 	 * 
-	 * @param array
+	 * @param inputArray
 	 *            The array which will be extended
 	 * @param entry
-	 *            The entry which will be added
-	 * @return the extended array.
+	 *            The entry which will be prepended
+	 * @return A new array with the content of "inputArray" and "entry"
+	 *         prepended to it, null if "inputArray" was null or a clone of
+	 *         "inputArray" if "entry" was null.
+	 * @see ArrayUtil#insert(char[], char, int)
 	 */
-	public static boolean[] append(boolean[] array, boolean entry) {
-		return add(array, entry, array.length);
-	}
-	
-	public static boolean[] prepend(boolean[] array, boolean entry){
-		return add(array, entry, 0);
+	public static char[] prepend(char[] inputArray, char entry) {
+		return insert(inputArray, entry, 0);
 	}
 
 	/**
-	 * Adds an entry at a specified index to a given array.
+	 * Prepends a byte entry to the given byte array.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" but prepends the entry "entry". If the "inputArray"
+	 * is null, null is returned. If the "inputArray" is specified but "entry"
+	 * is null, a clone of "inputArray" is returned.<br />
+	 * <br />
+	 * This internally calls ArrayUtil.insert(inputArray, entry, 0);
 	 * 
-	 * @param array
+	 * @param inputArray
 	 *            The array which will be extended
 	 * @param entry
-	 *            The entry which will be added
-	 * @param indexPos
-	 *            The position at which the entry will be added
-	 * @return the extended array, or the original array in case the indexPos
-	 *         was negative.
+	 *            The entry which will be prepended
+	 * @return A new array with the content of "inputArray" and "entry"
+	 *         prepended to it, null if "inputArray" was null or a clone of
+	 *         "inputArray" if "entry" was null.
+	 * @see ArrayUtil#insert(byte[], byte, int)
 	 */
-	public static char[] add(char[] array, char entry, int indexPos) {
-		/*if (indexPos < 0) {
-			return array;
-		}
-		char[] newArray = new char[array.length + 1];
-		if (indexPos >= array.length) {
-			for (int i = 0; i < array.length; i++)
-				newArray[i] = array[i];
-			newArray[newArray.length - 1] = entry;
-		} else {
-			for (int i = 0; i < indexPos; i++)
-				newArray[i] = array[i];
-			newArray[indexPos] = entry;
-			for (int i = indexPos + 1; i < newArray.length; i++)
-				newArray[i] = array[i - 1];
-		}
-		return newArray;*/
-		Character[] objArray = ArrayUtils.toObject(array);
-		Character[] newArray = add(objArray, entry, indexPos);
-		return ArrayUtils.toPrimitive(newArray);
+	public static byte[] prepend(byte[] inputArray, byte entry) {
+		return insert(inputArray, entry, 0);
 	}
 
 	/**
-	 * Adds an entry to end of the given array.
+	 * Prepends a short entry to the given short array.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" but prepends the entry "entry". If the "inputArray"
+	 * is null, null is returned. If the "inputArray" is specified but "entry"
+	 * is null, a clone of "inputArray" is returned.<br />
+	 * <br />
+	 * This internally calls ArrayUtil.insert(inputArray, entry, 0);
 	 * 
-	 * @param array
+	 * @param inputArray
 	 *            The array which will be extended
 	 * @param entry
-	 *            The entry which will be added
-	 * @return the extended array.
+	 *            The entry which will be prepended
+	 * @return A new array with the content of "inputArray" and "entry"
+	 *         prepended to it, null if "inputArray" was null or a clone of
+	 *         "inputArray" if "entry" was null.
+	 * @see ArrayUtil#insert(short[], short, int)
 	 */
-	public static char[] append(char[] array, char entry) {
-		return add(array, entry, array.length);
-	}
-	
-	public static char[] prepend(char[] array, char entry) {
-		return add(array, entry, 0);
+	public static short[] prepend(short[] inputArray, short entry) {
+		return insert(inputArray, entry, 0);
 	}
 
 	/**
-	 * Adds an entry at a specified index to a given array.
+	 * Prepends an int entry to the given int array.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" but prepends the entry "entry". If the "inputArray"
+	 * is null, null is returned. If the "inputArray" is specified but "entry"
+	 * is null, a clone of "inputArray" is returned.<br />
+	 * <br />
+	 * This internally calls ArrayUtil.insert(inputArray, entry, 0);
 	 * 
-	 * @param array
+	 * @param inputArray
 	 *            The array which will be extended
 	 * @param entry
-	 *            The entry which will be added
-	 * @param indexPos
-	 *            The position at which the entry will be added
-	 * @return the extended array, or the original array in case the indexPos
-	 *         was negative.
+	 *            The entry which will be prepended
+	 * @return A new array with the content of "inputArray" and "entry"
+	 *         prepended to it, null if "inputArray" was null or a clone of
+	 *         "inputArray" if "entry" was null.
+	 * @see ArrayUtil#insert(int[], int, int)
 	 */
-	public static byte[] add(byte[] array, byte entry, int indexPos) {
-		/*if (indexPos < 0) {
-			return array;
-		}
-		byte[] newArray = new byte[array.length + 1];
-		if (indexPos >= array.length) {
-			for (int i = 0; i < array.length; i++)
-				newArray[i] = array[i];
-			newArray[newArray.length - 1] = entry;
-		} else {
-			for (int i = 0; i < indexPos; i++)
-				newArray[i] = array[i];
-			newArray[indexPos] = entry;
-			for (int i = indexPos + 1; i < newArray.length; i++)
-				newArray[i] = array[i - 1];
-		}
-		return newArray;*/
-		Byte[] objArray = ArrayUtils.toObject(array);
-		Byte[] newArray = add(objArray, entry, indexPos);
-		return ArrayUtils.toPrimitive(newArray);
+	public static int[] prepend(int[] inputArray, int entry) {
+		return insert(inputArray, entry, 0);
 	}
 
 	/**
-	 * Adds an entry to end of the given array.
+	 * Prepends a long entry to the given long array.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" but prepends the entry "entry". If the "inputArray"
+	 * is null, null is returned. If the "inputArray" is specified but "entry"
+	 * is null, a clone of "inputArray" is returned.<br />
+	 * <br />
+	 * This internally calls ArrayUtil.insert(inputArray, entry, 0);
 	 * 
-	 * @param array
+	 * @param inputArray
 	 *            The array which will be extended
 	 * @param entry
-	 *            The entry which will be added
-	 * @return the extended array.
+	 *            The entry which will be prepended
+	 * @return A new array with the content of "inputArray" and "entry"
+	 *         prepended to it, null if "inputArray" was null or a clone of
+	 *         "inputArray" if "entry" was null.
+	 * @see ArrayUtil#insert(long[], long, int)
 	 */
-	public static byte[] append(byte[] array, byte entry) {
-		return add(array, entry, array.length);
-	}
-	
-	public static byte[] prepend(byte[] array, byte entry) {
-		return add(array, entry, 0);
+	public static long[] prepend(long[] inputArray, long entry) {
+		return insert(inputArray, entry, 0);
 	}
 
 	/**
-	 * Adds an entry at a specified index to a given array.
+	 * Prepends a float entry to the given float array.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" but prepends the entry "entry". If the "inputArray"
+	 * is null, null is returned. If the "inputArray" is specified but "entry"
+	 * is null, a clone of "inputArray" is returned.<br />
+	 * <br />
+	 * This internally calls ArrayUtil.insert(inputArray, entry, 0);
 	 * 
-	 * @param array
+	 * @param inputArray
 	 *            The array which will be extended
 	 * @param entry
-	 *            The entry which will be added
-	 * @param indexPos
-	 *            The position at which the entry will be added
-	 * @return the extended array, or the original array in case the indexPos
-	 *         was negative.
+	 *            The entry which will be prepended
+	 * @return A new array with the content of "inputArray" and "entry"
+	 *         prepended to it, null if "inputArray" was null or a clone of
+	 *         "inputArray" if "entry" was null.
+	 * @see ArrayUtil#insert(float[], float, int)
 	 */
-	public static short[] add(short[] array, short entry, int indexPos) {
-		/*if (indexPos < 0) {
-			return array;
-		}
-		short[] newArray = new short[array.length + 1];
-		if (indexPos >= array.length) {
-			for (int i = 0; i < array.length; i++)
-				newArray[i] = array[i];
-			newArray[newArray.length - 1] = entry;
-		} else {
-			for (int i = 0; i < indexPos; i++)
-				newArray[i] = array[i];
-			newArray[indexPos] = entry;
-			for (int i = indexPos + 1; i < newArray.length; i++)
-				newArray[i] = array[i - 1];
-		}
-		return newArray;*/
-		Short[] objArray = ArrayUtils.toObject(array);
-		Short[] newArray = add(objArray, entry, indexPos);
-		return ArrayUtils.toPrimitive(newArray);
+	public static float[] prepend(float[] inputArray, float entry) {
+		return insert(inputArray, entry, 0);
 	}
 
 	/**
-	 * Adds an entry to end of the given array.
+	 * Prepends a double entry to the given double array.<br />
+	 * Copies the content of "inputArray" to a new array with a length of
+	 * "inputArray.length+1" but prepends the entry "entry". If the "inputArray"
+	 * is null, null is returned. If the "inputArray" is specified but "entry"
+	 * is null, a clone of "inputArray" is returned.<br />
+	 * <br />
+	 * This internally calls ArrayUtil.insert(inputArray, entry, 0);
 	 * 
-	 * @param array
+	 * @param inputArray
 	 *            The array which will be extended
 	 * @param entry
-	 *            The entry which will be added
-	 * @return the extended array.
+	 *            The entry which will be prepended
+	 * @return A new array with the content of "inputArray" and "entry"
+	 *         prepended to it, null if "inputArray" was null or a clone of
+	 *         "inputArray" if "entry" was null.
+	 * @see ArrayUtil#insert(double[], double, int)
 	 */
-	public static short[] append(short[] array, short entry) {
-		return add(array, entry, array.length);
-	}
-	
-	public static short[] prepend(short[] array, short entry) {
-		return add(array, entry, 0);
-	}
-
-	/**
-	 * Adds an entry at a specified index to a given array.
-	 * 
-	 * @param array
-	 *            The array which will be extended
-	 * @param entry
-	 *            The entry which will be added
-	 * @param indexPos
-	 *            The position at which the entry will be added
-	 * @return the extended array, or the original array in case the indexPos
-	 *         was negative.
-	 */
-	public static int[] add(int[] array, int entry, int indexPos) {
-		/*if (indexPos < 0) {
-			return array;
-		}
-		int[] newArray = new int[array.length + 1];
-		if (indexPos >= array.length) {
-			for (int i = 0; i < array.length; i++)
-				newArray[i] = array[i];
-			newArray[newArray.length - 1] = entry;
-		} else {
-			for (int i = 0; i < indexPos; i++)
-				newArray[i] = array[i];
-			newArray[indexPos] = entry;
-			for (int i = indexPos + 1; i < newArray.length; i++)
-				newArray[i] = array[i - 1];
-		}
-		return newArray;*/
-		Integer[] objArray = ArrayUtils.toObject(array);
-		Integer[] newArray = add(objArray, entry, indexPos);
-		return ArrayUtils.toPrimitive(newArray);
-	}
-
-	/**
-	 * Adds an entry to end of the given array.
-	 * 
-	 * @param array
-	 *            The array which will be extended
-	 * @param entry
-	 *            The entry which will be added
-	 * @return the extended array.
-	 */
-	public static int[] append(int[] array, int entry) {
-		return add(array, entry, array.length);
-	}
-	
-	public static int[] prepend(int[] array, int entry) {
-		return add(array, entry, 0);
-	}
-
-	/**
-	 * Adds an entry at a specified index to a given array.
-	 * 
-	 * @param array
-	 *            The array which will be extended
-	 * @param entry
-	 *            The entry which will be added
-	 * @param indexPos
-	 *            The position at which the entry will be added
-	 * @return the extended array, or the original array in case the indexPos
-	 *         was negative.
-	 */
-	public static long[] add(long[] array, long entry, int indexPos) {
-		/*if (indexPos < 0) {
-			return array;
-		}
-		long[] newArray = new long[array.length + 1];
-		if (indexPos >= array.length) {
-			for (int i = 0; i < array.length; i++)
-				newArray[i] = array[i];
-			newArray[newArray.length - 1] = entry;
-		} else {
-			for (int i = 0; i < indexPos; i++)
-				newArray[i] = array[i];
-			newArray[indexPos] = entry;
-			for (int i = indexPos + 1; i < newArray.length; i++)
-				newArray[i] = array[i - 1];
-		}
-		return newArray;*/
-		Long[] objArray = ArrayUtils.toObject(array);
-		Long[] newArray = add(objArray, entry, indexPos);
-		return ArrayUtils.toPrimitive(newArray);
-	}
-
-	/**
-	 * Adds an entry to end of the given array.
-	 * 
-	 * @param array
-	 *            The array which will be extended
-	 * @param entry
-	 *            The entry which will be added
-	 * @return the extended array.
-	 */
-	public static long[] append(long[] array, long entry) {
-		return add(array, entry, array.length);
-	}
-	
-	public static long[] prepend(long[] array, long entry) {
-		return add(array, entry, 0);
-	}
-
-	/**
-	 * Adds an entry at a specified index to a given array.
-	 * 
-	 * @param array
-	 *            The array which will be extended
-	 * @param entry
-	 *            The entry which will be added
-	 * @param indexPos
-	 *            The position at which the entry will be added
-	 * @return the extended array, or the original array in case the indexPos
-	 *         was negative.
-	 */
-	public static float[] add(float[] array, float entry, int indexPos) {
-		/*if (indexPos < 0) {
-			return array;
-		}
-		float[] newArray = new float[array.length + 1];
-		if (indexPos >= array.length) {
-			for (int i = 0; i < array.length; i++)
-				newArray[i] = array[i];
-			newArray[newArray.length - 1] = entry;
-		} else {
-			for (int i = 0; i < indexPos; i++)
-				newArray[i] = array[i];
-			newArray[indexPos] = entry;
-			for (int i = indexPos + 1; i < newArray.length; i++)
-				newArray[i] = array[i - 1];
-		}
-		return newArray;*/
-		Float[] objArray = ArrayUtils.toObject(array);
-		Float[] newArray = add(objArray, entry, indexPos);
-		return ArrayUtils.toPrimitive(newArray);
-	}
-
-	/**
-	 * Adds an entry to end of the given array.
-	 * 
-	 * @param array
-	 *            The array which will be extended
-	 * @param entry
-	 *            The entry which will be added
-	 * @return the extended array.
-	 */
-	public static float[] append(float[] array, float entry) {
-		return add(array, entry, array.length);
-	}
-	
-	public static float[] prepend(float[] array, float entry) {
-		return add(array, entry, 0);
-	}
-
-	/**
-	 * Adds an entry at a specified index to a given array.
-	 * 
-	 * @param array
-	 *            The array which will be extended
-	 * @param entry
-	 *            The entry which will be added
-	 * @param indexPos
-	 *            The position at which the entry will be added
-	 * @return the extended array, or the original array in case the indexPos
-	 *         was negative.
-	 */
-	public static double[] add(double[] array, double entry, int indexPos) {
-		/*if (indexPos < 0) {
-			return array;
-		}
-		double[] newArray = new double[array.length + 1];
-		if (indexPos >= array.length) {
-			for (int i = 0; i < array.length; i++)
-				newArray[i] = array[i];
-			newArray[newArray.length - 1] = entry;
-		} else {
-			for (int i = 0; i < indexPos; i++)
-				newArray[i] = array[i];
-			newArray[indexPos] = entry;
-			for (int i = indexPos + 1; i < newArray.length; i++)
-				newArray[i] = array[i - 1];
-		}
-		return newArray;*/
-		Double[] objArray = ArrayUtils.toObject(array);
-		Double[] newArray = add(objArray, entry, indexPos);
-		return ArrayUtils.toPrimitive(newArray);
-	}
-
-	/**
-	 * Adds an entry to end of the given array.
-	 * 
-	 * @param array
-	 *            The array which will be extended
-	 * @param entry
-	 *            The entry which will be added
-	 * @return the extended array.
-	 */
-	public static double[] append(double[] array, double entry) {
-		return add(array, entry, array.length);
-	}
-	
-	public static double[] prepend(double[] array, double entry) {
-		return add(array, entry, 0);
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/*
-	 * For: Object, boolean, char, String, byte, short, int, long, float, double
-	 * move Entry in "array" from "indexFrom" to "indexTo"
-	 * 
-	 */
-
-	/**
-	 * Moves a array-entry from a specified index to an other.
-	 * 
-	 * @param array
-	 *            The array which holds the entry
-	 * @param indexFrom
-	 *            The index of the entry which will be moved
-	 * @param indexTo
-	 *            The index which the entry will be moved to
-	 * @return The array with the moved entry, or the original array if
-	 *         indexFrom was not an valid index or indexTo was below 0.
-	 */
-	public static <T> T[] move(T[] array, int indexFrom, int indexTo) {
-		if (indexFrom < 0 || indexFrom >= array.length || indexTo < 0) {
-			return array;
-		}
-		List<T> list = new ArrayList<>(Arrays.asList(array));
-		T entry = list.get(indexFrom);
-		list.remove(indexFrom);
-		list.add(indexTo, entry);
-		return list.toArray(array);
-	}
-
-	/**
-	 * Moves a array-entry from a specified index to an other.
-	 * 
-	 * @param array
-	 *            The array which holds the entry
-	 * @param indexFrom
-	 *            The index of the entry which will be moved
-	 * @param indexTo
-	 *            The index which the entry will be moved to
-	 * @return The array with the moved entry, or the original array if
-	 *         indexFrom was not an valid index or indexTo was below 0.
-	 */
-	public static boolean[] move(boolean[] array, int indexFrom, int indexTo) {
-		/*if (indexFrom < 0 || indexFrom >= array.length || indexTo < 0) {
-			return array;
-		}
-		boolean entry = array[indexFrom];
-		array = delete(array, indexFrom);
-		array = add(array, entry, indexTo);
-		return array;*/
-		Boolean[] objArray = ArrayUtils.toObject(array);
-		Boolean[] newArray = move(objArray, indexFrom, indexTo);
-		return ArrayUtils.toPrimitive(newArray);
-	}
-
-	/**
-	 * Moves a array-entry from a specified index to an other.
-	 * 
-	 * @param array
-	 *            The array which holds the entry
-	 * @param indexFrom
-	 *            The index of the entry which will be moved
-	 * @param indexTo
-	 *            The index which the entry will be moved to
-	 * @return The array with the moved entry, or the original array if
-	 *         indexFrom was not an valid index or indexTo was below 0.
-	 */
-	public static char[] move(char[] array, int indexFrom, int indexTo) {
-		/*if (indexFrom < 0 || indexFrom >= array.length || indexTo < 0) {
-			return array;
-		}
-		char entry = array[indexFrom];
-		array = delete(array, indexFrom);
-		array = add(array, entry, indexTo);
-		return array;*/
-		Character[] objArray = ArrayUtils.toObject(array);
-		Character[] newArray = move(objArray, indexFrom, indexTo);
-		return ArrayUtils.toPrimitive(newArray);
-		
-	}
-
-	/**
-	 * Moves a array-entry from a specified index to an other.
-	 * 
-	 * @param array
-	 *            The array which holds the entry
-	 * @param indexFrom
-	 *            The index of the entry which will be moved
-	 * @param indexTo
-	 *            The index which the entry will be moved to
-	 * @return The array with the moved entry, or the original array if
-	 *         indexFrom was not an valid index or indexTo was below 0.
-	 */
-	public static byte[] move(byte[] array, int indexFrom, int indexTo) {
-		/*if (indexFrom < 0 || indexFrom >= array.length || indexTo < 0) {
-			return array;
-		}
-		byte entry = array[indexFrom];
-		array = delete(array, indexFrom);
-		array = add(array, entry, indexTo);
-		return array;*/
-		Byte[] objArray = ArrayUtils.toObject(array);
-		Byte[] newArray = move(objArray, indexFrom, indexTo);
-		return ArrayUtils.toPrimitive(newArray);
-	}
-
-	/**
-	 * Moves a array-entry from a specified index to an other.
-	 * 
-	 * @param array
-	 *            The array which holds the entry
-	 * @param indexFrom
-	 *            The index of the entry which will be moved
-	 * @param indexTo
-	 *            The index which the entry will be moved to
-	 * @return The array with the moved entry, or the original array if
-	 *         indexFrom was not an valid index or indexTo was below 0.
-	 */
-	public static short[] move(short[] array, int indexFrom, int indexTo) {
-		/*if (indexFrom < 0 || indexFrom >= array.length || indexTo < 0) {
-			return array;
-		}
-		short entry = array[indexFrom];
-		array = delete(array, indexFrom);
-		array = add(array, entry, indexTo);
-		return array;*/
-		Short[] objArray = ArrayUtils.toObject(array);
-		Short[] newArray = move(objArray, indexFrom, indexTo);
-		return ArrayUtils.toPrimitive(newArray);
-	}
-
-	/**
-	 * Moves a array-entry from a specified index to an other.
-	 * 
-	 * @param array
-	 *            The array which holds the entry
-	 * @param indexFrom
-	 *            The index of the entry which will be moved
-	 * @param indexTo
-	 *            The index which the entry will be moved to
-	 * @return The array with the moved entry, or the original array if
-	 *         indexFrom was not an valid index or indexTo was below 0.
-	 */
-	public static int[] move(int[] array, int indexFrom, int indexTo) {
-		/*if (indexFrom < 0 || indexFrom >= array.length || indexTo < 0) {
-			return array;
-		}
-		int entry = array[indexFrom];
-		array = delete(array, indexFrom);
-		array = addEntry(array, entry, indexTo);
-		return array;*/
-		Integer[] objArray = ArrayUtils.toObject(array);
-		Integer[] newArray = move(objArray, indexFrom, indexTo);
-		return ArrayUtils.toPrimitive(newArray);
-	}
-
-	/**
-	 * Moves a array-entry from a specified index to an other.
-	 * 
-	 * @param array
-	 *            The array which holds the entry
-	 * @param indexFrom
-	 *            The index of the entry which will be moved
-	 * @param indexTo
-	 *            The index which the entry will be moved to
-	 * @return The array with the moved entry, or the original array if
-	 *         indexFrom was not an valid index or indexTo was below 0.
-	 */
-	public static long[] move(long[] array, int indexFrom, int indexTo) {
-		/*if (indexFrom < 0 || indexFrom >= array.length || indexTo < 0) {
-			return array;
-		}
-		long entry = array[indexFrom];
-		array = delete(array, indexFrom);
-		array = addEntry(array, entry, indexTo);
-		return array;*/
-		Long[] objArray = ArrayUtils.toObject(array);
-		Long[] newArray = move(objArray, indexFrom, indexTo);
-		return ArrayUtils.toPrimitive(newArray);
-	}
-
-	/**
-	 * Moves a array-entry from a specified index to an other.
-	 * 
-	 * @param array
-	 *            The array which holds the entry
-	 * @param indexFrom
-	 *            The index of the entry which will be moved
-	 * @param indexTo
-	 *            The index which the entry will be moved to
-	 * @return The array with the moved entry, or the original array if
-	 *         indexFrom was not an valid index or indexTo was below 0.
-	 */
-	public static float[] move(float[] array, int indexFrom, int indexTo) {
-		/*if (indexFrom < 0 || indexFrom >= array.length || indexTo < 0) {
-			return array;
-		}
-		float entry = array[indexFrom];
-		array = delete(array, indexFrom);
-		array = addEntry(array, entry, indexTo);
-		return array;*/
-		Float[] objArray = ArrayUtils.toObject(array);
-		Float[] newArray = move(objArray, indexFrom, indexTo);
-		return ArrayUtils.toPrimitive(newArray);
-	}
-
-	/**
-	 * Moves a array-entry from a specified index to an other.
-	 * 
-	 * @param array
-	 *            The array which holds the entry
-	 * @param indexFrom
-	 *            The index of the entry which will be moved
-	 * @param indexTo
-	 *            The index which the entry will be moved to
-	 * @return The array with the moved entry, or the original array if
-	 *         indexFrom was not an valid index or indexTo was below 0.
-	 */
-	public static double[] move(double[] array, int indexFrom, int indexTo) {
-		/*if (indexFrom < 0 || indexFrom >= array.length || indexTo < 0) {
-			return array;
-		}
-		double entry = array[indexFrom];
-		array = delete(array, indexFrom);
-		array = addEntry(array, entry, indexTo);
-		return array;*/
-		Double[] objArray = ArrayUtils.toObject(array);
-		Double[] newArray = move(objArray, indexFrom, indexTo);
-		return ArrayUtils.toPrimitive(newArray);
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static <T> String toString(T[] array) {
-		return new ArrayList<>(Arrays.asList(array)).toString();
-	}
-
-	public static String toString(boolean[] array) {
-		return toString(ArrayUtils.toObject(array));
-	}
-
-	public static String toString(char[] array) {
-		return toString(ArrayUtils.toObject(array));
-	}
-
-	public static String toString(byte[] array) {
-		return toString(ArrayUtils.toObject(array));
-	}
-
-	public static String toString(short[] array) {
-		return toString(ArrayUtils.toObject(array));
-	}
-
-	public static String toString(int[] array) {
-		return toString(ArrayUtils.toObject(array));
-	}
-
-	public static String toString(long[] array) {
-		return toString(ArrayUtils.toObject(array));
-	}
-
-	public static String toString(float[] array) {
-		return toString(ArrayUtils.toObject(array));
-	}
-
-	public static String toString(double[] array) {
-		return toString(ArrayUtils.toObject(array));
+	public static double[] prepend(double[] inputArray, double entry) {
+		return insert(inputArray, entry, 0);
 	}
 
 }
