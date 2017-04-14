@@ -1,5 +1,6 @@
 package libanda.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -8,147 +9,44 @@ import java.util.List;
 /**
  * The OS class contains some static fields which are holding the value of the
  * similarly named system properties, along with some Methods for retrieving
- * system properties and checking which is the users OS.
+ * system properties.
  * 
  * @author Andanan
- * @lastModified 2017-03-01
- * @version 1.0.0
+ * @lastModified 2017-04-14
+ * @version 2.0.0
  */
-@Deprecated // org.apache.commons.lang3.SystemUtils implements all of this :(
 public abstract class OS {
 
-	/**
-	 * Character which is used to separate paths in path-lists, like for example
-	 * in {@link #CLASSPATH JAVA_CLASSPATH}<br />
-	 * (Retrieves value by calling:
-	 * <b><code>System.getProperty("path.separator")</code></b> ) <br />
-	 * <br />
-	 * Default value: ":"
-	 */
-	public static final String PATH_SEPARATOR = System.getProperty("path.separator");
-	/**
-	 * Character which is used to separate files and directories in paths<br />
-	 * (Retrieves value by calling:
-	 * <b><code>System.getProperty("file.separator")</code></b> ) <br />
-	 * <br />
-	 * Default values: [Windows: "\"] [Linux/Unix: "/"]
-	 */
-	public static final String FILE_SEPARATOR = System.getProperty("file.separator");
-	/**
-	 * Character which is used to separate lines in for example files or in the
-	 * terminal (<b>Line feed</b>)<br />
-	 * (Retrieves value by calling:
-	 * <b><code>System.getProperty("line.separator")</code></b> ) <br />
-	 * <br />
-	 * Default value: [Windows: "\r\n"] [Mac: "\r"] [Linux/Unix: "\n"]
-	 */
-	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
-	/**
-	 * Character or character sequence which is used to separate lines in for
-	 * example files or in the terminal (<b>Line feed</b>)<br />
-	 * (Retrieves value by calling:
-	 * <b><code>System.getProperty("line.separator")</code></b> ) <br />
-	 * (Clone of {@link #LINE_SEPARATOR OS.LINE_SEPARATOR})<br />
-	 * <br />
-	 * Default value: [Windows: "\r\n"] [Mac: "\r"] [Linux/Unix: "\n"]
-	 */
-	public static final String LF = LINE_SEPARATOR;
 	/**
 	 * The system dependent line-feed/new-line char sequence for Windows<br />
 	 * (A carriage return character followed by a new line character: "\r\n" )
 	 */
 	public static final String LF_WIN = "\r\n";
 	/**
-	 * The system dependent line-feed/new-line char for Mac<br />
+	 * The system dependent line-feed/new-line char for Mac (<=version 9)<br />
+	 * For Mac OS X the newline character was changed to \n to satisfy the Unix
+	 * standard<br />
 	 * (A carriage return character: "\r" )
 	 */
 	public static final String LF_MAC = "\r";
 	/**
-	 * The system dependent line-feed/new-line char for Unix/Linux<br />
+	 * The system dependent line-feed/new-line char for Unix/Linux/Mac OS
+	 * X<br />
 	 * (A new line character: "\n" )
 	 */
 	public static final String LF_UNIX = "\n";
 	/**
-	 * The system dependent path to the temporary directory<br />
-	 * (Retrieves value by calling:
-	 * <b><code>System.getProperty("java.io.tmpdir")</code></b> ) <br />
+	 * The system-property-key of the path to the temporary directory<br />
 	 */
-	public static final String TMP_DIR = System.getProperty("java.io.tmpdir");
+	public static final String TMP_DIR_KEY = "java.io.tmpdir";
 	/**
-	 * TODO: Add description for WORKING_DIR
+	 * The system-property-key of the current working directory<br />
 	 */
-	public static final String WORKING_DIR = System.getProperty("user.dir");
+	public static final String WORKING_DIR_KEY = "user.dir";
 	/**
-	 * Path to the user home directory as String.<br />
-	 * (Retrieves value by calling:
-	 * <b><code>System.getProperty("user.home")</code></b> )<br />
-	 * <br />
-	 * Default values: [Windows:
-	 * "C:{@literal \}users\{@literal <}USERNAME{@literal >}"] [Linux:
-	 * "/home/{@literal <}USERNAME{@literal >"]
+	 * The system-property-key of the launch command<br />
 	 */
-	public static final String USER_HOME = System.getProperty("user.home");
-	/**
-	 * Path to the home directory of the currently active Java install.<br />
-	 * (Retrieves value by calling:
-	 * <b><code>System.getProperty("java.home")</code></b> )
-	 */
-	public static final String JAVA_HOME = System.getProperty("java.home");
-	/**
-	 * TODO: Add description for LIBRARIES
-	 */
-	public static final String LIBRARIES = System.getProperty("java.library.path");
-	/**
-	 * TODO: Add description for CLASSPATH
-	 */
-	public static final String CLASSPATH = System.getProperty("java.class.path");
-	/**
-	 * The name of the current user.<br />
-	 * (Retrieves value by calling:
-	 * <b><code>System.getProperty("user.name")</code></b> )
-	 */
-	public static final String USER_NAME = System.getProperty("user.name");
-	/**
-	 * The country code of the current locale.<br />
-	 * (Retrieves value by calling:
-	 * <b><code>System.getProperty("user.country")</code></b> )
-	 */
-	public static final String COUNTRY = System.getProperty("user.country");
-	/**
-	 * The language code of the current locale.<br />
-	 * (Retrieves value by calling:
-	 * <b><code>System.getProperty("user.language")</code></b> )
-	 */
-	public static final String LANGUAGE = System.getProperty("user.language");
-	/**
-	 * TODO: Add description for OS_NAME
-	 */
-	public static final String OS_NAME = System.getProperty("os.name");
-	/**
-	 * The architecture of the machine.<br />
-	 * Normally either <code><b>amd64</b></code>, <code><b>x86</b></code>,
-	 * <code><b>i386</b></code>, <code><b>sparc</b></code> or
-	 * <code><b>ppc</b></code><br />
-	 * (Retrieves value by calling:
-	 * <b><code>System.getProperty("os.arch")</code></b> )
-	 */
-	public static final String OS_ARCH = System.getProperty("os.arch");
-	/**
-	 * TODO: Add description for OS_VERSION
-	 */
-	public static final String OS_VERSION = System.getProperty("os.version");
-	/**
-	 * TODO: Add description for JAVA_VERSION
-	 */
-	public static final String JAVA_VERSION = System.getProperty("java.specification.version");
-	/**
-	 * The command used to launch the program, jvm args as well as the
-	 * <code><b>"java [...] (-jar)"</b></code> command are not included<br />
-	 * For example: <code><b>SampleApp arg1 arg2</b></code><br />
-	 * (Retrieves value by calling:
-	 * <b><code>System.getProperty("sun.java.command")</code></b> )
-	 */
-	public static final String LAUNCH_COMMAND = System.getProperty("sun.java.command");
+	public static final String LAUNCH_COMMAND_KEY = "sun.java.command";
 
 	/**
 	 * Retrieves a {@link java.util.List java.util.List&lt;String&gt;} of all
@@ -158,7 +56,7 @@ public abstract class OS {
 	 * @return A list of the keys of all system properties
 	 * @see #getProperties()
 	 */
-	public static List<String> getPropertyKeys() {
+	public static List<String> getSystemPropertyKeys() {
 		List<String> properties = new ArrayList<>();
 		Enumeration<Object> propertyKeys = System.getProperties().keys();
 		while (propertyKeys.hasMoreElements()) {
@@ -176,7 +74,7 @@ public abstract class OS {
 	 * @return A list of the values of all system properties
 	 * @see #getPropertyKeys()
 	 */
-	public static List<String> getProperties() {
+	public static List<String> getSystemProperties() {
 		List<String> properties = new ArrayList<>();
 		Iterator<Object> propertyValueIterator = System.getProperties().values().iterator();
 		while (propertyValueIterator.hasNext()) {
@@ -198,8 +96,8 @@ public abstract class OS {
 	 * @see java.lang.System#getProperty(String)
 	 * @see java.lang.System#getProperties()
 	 */
-	public static String getPropertyByIndex(int index) {
-		List<String> properties = getProperties();
+	public static String getSystemPropertyByIndex(int index) {
+		List<String> properties = getSystemProperties();
 		if (index < 0 || index >= properties.size()) {
 			return null;
 		} else {
@@ -217,8 +115,8 @@ public abstract class OS {
 	 * @return The key of the Property as String or null if <b>index</b> is out
 	 *         of bounds of the underlying property map.
 	 */
-	public static String getPropertyKeyByIndex(int index) {
-		List<String> propertyKeys = getPropertyKeys();
+	public static String getSystemPropertyKeyByIndex(int index) {
+		List<String> propertyKeys = getSystemPropertyKeys();
 		if (index < 0 || index >= propertyKeys.size()) {
 			return null;
 		} else {
@@ -227,47 +125,48 @@ public abstract class OS {
 	}
 
 	/**
-	 * @return True if and only if OS is Windows, else returns false
+	 * Returns the index of the first occurrence of the specified key in the
+	 * list of system-property-keys, or -1 if the list does not contain the key.
+	 * 
+	 * @param propertyKey
+	 *            - The key to search for
+	 * @return The index of the first occurrence of the specified key in the
+	 *         list of system-property-keys, or -1 if the list does not contain
+	 *         the key.
 	 */
-	@Deprecated // org.apache.commons.lang.SystemUtils contains this already
-	public static boolean isWindows() {
-		return (OS_NAME.contains("win"));
+	public static int indexOfSystemPropertyKey(String propertyKey) {
+		return getSystemPropertyKeys().indexOf(propertyKey);
 	}
 
 	/**
-	 * @return True if and only if OS is MacOS, else returns false
+	 * Returns the temporary directory as File object
+	 * 
+	 * @return The temporary directory as File object
 	 */
-	@Deprecated // org.apache.commons.lang.SystemUtils contains this already
-	public static boolean isMac() {
-		return (OS_NAME.contains("mac"));
+	public static File getTempDir() {
+		return new File(System.getProperty(OS.TMP_DIR_KEY));
 	}
 
 	/**
-	 * @return True if and only if OS is Unix or Linux, else returns false
+	 * Returns the current working directory as File object
+	 * 
+	 * @return The current working directory as File object
 	 */
-	@Deprecated // org.apache.commons.lang.SystemUtils contains this already
-	public static boolean isUnix() {
-		return (OS_NAME.contains("nix") || OS_NAME.contains("nux") || OS_NAME.contains("aix"));
+	public static File getWorkingDir() {
+		return new File(System.getProperty(OS.WORKING_DIR_KEY));
 	}
 
 	/**
-	 * @return True if and only if OS is Solaris, else returns false
+	 * The command used to launch the program, jvm args as well as the
+	 * <code><b>"java [...] (-jar)"</b></code> command are not included<br />
+	 * For example: <code><b>Foo arg1 arg2</b></code>
 	 */
-	@Deprecated // org.apache.commons.lang.SystemUtils contains this already
-	public static boolean isSolaris() {
-		return (OS_NAME.contains("sunos"));
+	public static String getLaunchCommand() {
+		return System.getProperty(OS.LAUNCH_COMMAND_KEY);
 	}
 
-	/**
-	 * @return True if and only if OS is either Windows, MacOS, Unix, Linux or
-	 *         Solaris, else returns false
-	 * @see #isWindows()
-	 * @see #isMac()
-	 * @see #isUnix()
-	 * @see #isSolaris()
+	/*
+	 * INFO: identify OS via org.apache.commons.lang3.SystemUtils
 	 */
-	@Deprecated // org.apache.commons.lang.SystemUtils contains this already
-	public static boolean isKnown() {
-		return isWindows() || isMac() || isUnix() || isSolaris();
-	}
+
 }

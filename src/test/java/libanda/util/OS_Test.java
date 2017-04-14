@@ -1,7 +1,10 @@
 package libanda.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,125 +19,109 @@ import org.junit.Test;
  * This class contains all JUnit-4.x test cases for {@link libanda.util.OS}
  * 
  * @author Andanan
- * @lastModified 2017-02-26
+ * @lastModified 2017-04-14
  * @version 1.0
  * @see libanda.util.OS
  */
 public class OS_Test {
-	private String osName;
 	private Properties systemProperties;
 	private List<String> systemPropertyKeys;
 	private List<String> systemPropertyValues;
-	
+	private static final int TEST_RUN_QUANTITY = 5;
+
 	@Before
 	public void setupTest() {
-		this.osName = System.getProperty("os.name");
 		this.systemProperties = System.getProperties();
 		String[] systemPropertyValues = this.systemProperties.values().toArray(new String[0]);
 		this.systemPropertyValues = Arrays.asList(systemPropertyValues);
-		List<Object> systemPropertyKeysObjects = Collections.list(this.systemProperties.keys());
 		List<String> systemPropertyKeys = new ArrayList<>();
-		systemPropertyKeysObjects.forEach(obj -> {
-			systemPropertyKeys.add((String) obj);
+		Collections.list(this.systemProperties.keys()).forEach(obj -> {
+			systemPropertyKeys.add(obj.toString());
 		});
 		this.systemPropertyKeys = systemPropertyKeys;
-		System.out.println("\n\nAll Properties:");
-		System.out.println(System.getProperties().toString().replace("\r", "\\r").replace("\n", "\\n").replace(",", "\n"));
-		System.out.println();
 	}
-	
+
 	@Test
-	public void testStaticKeys(){
-		assertEquals(System.getProperty("path.separator"), OS.PATH_SEPARATOR);
-		assertEquals(System.getProperty("file.separator"), OS.FILE_SEPARATOR);
-		assertEquals(System.getProperty("line.separator"), OS.LINE_SEPARATOR);
-		assertEquals(System.getProperty("line.separator"), OS.LF);
-		assertEquals(System.getProperty("java.io.tmpdir"), OS.TMP_DIR);
-		assertEquals(System.getProperty("user.dir"), OS.WORKING_DIR);
-		assertEquals(System.getProperty("user.home"), OS.USER_HOME);
-		assertEquals(System.getProperty("java.home"), OS.JAVA_HOME);
-		assertEquals(System.getProperty("java.library.path"), OS.LIBRARIES);
-		assertEquals(System.getProperty("java.class.path"), OS.CLASSPATH);
-		assertEquals(System.getProperty("user.name"), OS.USER_NAME);
-		assertEquals(System.getProperty("user.country"), OS.COUNTRY);
-		assertEquals(System.getProperty("user.language"), OS.LANGUAGE);
-		assertEquals(System.getProperty("os.name"), OS.OS_NAME);
-		assertEquals(System.getProperty("os.arch"), OS.OS_ARCH);
-		assertEquals(System.getProperty("os.version"), OS.OS_VERSION);
-		assertEquals(System.getProperty("java.specification.version"), OS.JAVA_VERSION);
-		assertEquals(System.getProperty("sun.java.command"), OS.LAUNCH_COMMAND);
+	public void LFTest() {
+		assertEquals("\r", OS.LF_MAC);
+		assertEquals("\n", OS.LF_UNIX);
+		assertEquals("\r\n", OS.LF_WIN);
 	}
-	
+
 	@Test
-	public void testGetPropertyKeys() {
-		List<String> propertyKeys = OS.getPropertyKeys();
+	public void StaticKeysTest() {
+		assertEquals("java.io.tmpdir", OS.TMP_DIR_KEY);
+		assertEquals("user.dir", OS.WORKING_DIR_KEY);
+		assertEquals("sun.java.command", OS.LAUNCH_COMMAND_KEY);
+	}
+
+	@Test
+	public void GetSystemPropertyKeysTest() {
+		List<String> propertyKeys = OS.getSystemPropertyKeys();
 		assertTrue(this.systemPropertyKeys.equals(propertyKeys));
 	}
-	
+
 	@Test
-	public void testGetPropertyValues() {
-		List<String> propertyValues = OS.getProperties();
+	public void GetSystemPropertiesTest() {
+		List<String> propertyValues = OS.getSystemProperties();
 		assertTrue(this.systemPropertyValues.equals(propertyValues));
 	}
-	
+
 	@Test
-	public void testGetPropertyByIndex() {
-		final int runs = 5;
+	public void GetSystemPropertyByIndexTest() {
 		Random rnd = new Random();
 		int propertyCount = this.systemPropertyValues.size();
-		for (int i = 0; i < runs; i++) {
+		for (int i = 0; i < OS_Test.TEST_RUN_QUANTITY; i++) {
 			int index = rnd.nextInt(propertyCount);
-			String propertyValueResult = OS.getPropertyByIndex(index);
+			String propertyValueResult = OS.getSystemPropertyByIndex(index);
 			String propertyValue = this.systemPropertyValues.get(index);
 			assertEquals(propertyValue, propertyValueResult);
 		}
 	}
-	
+
 	@Test
-	public void testGetPropertyKeyByIndex() {
-		final int runs = 5;
+	public void GetSystemPropertyKeyByIndexTest() {
 		Random rnd = new Random();
 		int propertyCount = this.systemPropertyValues.size();
-		for (int i = 0; i < runs; i++) {
+		for (int i = 0; i < OS_Test.TEST_RUN_QUANTITY; i++) {
 			int index = rnd.nextInt(propertyCount);
 			String propertyKey = this.systemPropertyKeys.get(index);
-			String propertyKeyResult = OS.getPropertyKeyByIndex(index);
+			String propertyKeyResult = OS.getSystemPropertyKeyByIndex(index);
 			assertEquals(propertyKey, propertyKeyResult);
 		}
 	}
-	
+
 	@Test
-	public void testIsWindows(){
-		boolean isWindowsResult = OS.isWindows();
-		boolean isWindows = osName.contains("win");
-		assertEquals(isWindows, isWindowsResult);
+	public void IndexOfSystemPropertyKeyTest() {
+		Random rnd = new Random();
+		int propertyCount = this.systemPropertyValues.size();
+		for (int i = 0; i < OS_Test.TEST_RUN_QUANTITY; i++) {
+			int index = rnd.nextInt(propertyCount);
+			String propertyKey = this.systemPropertyKeys.get(index);
+			assertEquals(index, OS.indexOfSystemPropertyKey(propertyKey));
+		}
 	}
-	
+
 	@Test
-	public void testIsMac(){
-		boolean isMacResult = OS.isMac();
-		boolean isMac = osName.contains("mac");
-		assertEquals(isMac, isMacResult);
+	public void GetTempDirTest() {
+		File tmpDir = new File(System.getProperty("java.io.tmpdir"));
+		File osTmpDir = OS.getTempDir();
+		assertEquals(tmpDir, osTmpDir);
+		assertNotEquals(new File(""), osTmpDir);
 	}
-	
+
 	@Test
-	public void testIsUnix(){
-		boolean isUnixResult = OS.isUnix();
-		boolean isUnix = osName.contains("nix") || osName.contains("nux") || osName.contains("aix");
-		assertEquals(isUnix, isUnixResult);
+	public void GetWorkingDirTest() {
+		File workingDir = new File(System.getProperty("user.dir"));
+		File osWorkingDir = OS.getWorkingDir();
+		assertEquals(workingDir, osWorkingDir);
+		assertNotEquals(new File(""), osWorkingDir);
 	}
-	
+
 	@Test
-	public void testIsSolaris(){
-		boolean isUnixResult = OS.isUnix();
-		boolean isUnix = osName.contains("sunos");
-		assertEquals(isUnix, isUnixResult);
+	public void GetLaunchCommandTest() {
+		String launchCommand = System.getProperty("sun.java.command");
+		assertEquals(launchCommand, OS.getLaunchCommand());
 	}
-	
-	@Test
-	public void testIsKnown(){
-		boolean isKnownResult = OS.isUnix();
-		boolean isKnown = osName.contains("win") || osName.contains("mac") || osName.contains("nix") || osName.contains("nux") || osName.contains("aix") || osName.contains("sunos");
-		assertEquals(isKnown, isKnownResult);
-	}
+
 }
