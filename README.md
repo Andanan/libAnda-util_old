@@ -1,20 +1,10 @@
 # libAnda-util
 
-libAnda is a collection of useful Java-classes as used by Andanan in his projects.
+The libAnda project is intended as a collection of useful Java-classes.
 The util package is a collection of basic, language-improving tool classes.
 
-[Documentation](https://andanan.github.io/libAnda-util/)
-
-### Some contained Classes:
-* **OS**  
-  Contains...
-* **ArrayUtil**  
-  An extension to the [ArrayUtil](https://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/ArrayUtils.html) class of [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/)
+[Project-Site](https://andanan.github.io/libAnda-util/) (GitHub-Pages)
 
 ### Dependencies
-* [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/)
-
-
-----------
-
-Written with [StackEdit](https://stackedit.io/).
+* [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/) 3.5
+* [jUnit](http://junit.org/) 4.12

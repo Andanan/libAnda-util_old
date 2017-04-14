@@ -2,13 +2,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>libanda</groupId>
-  <artifactId>libanda-util</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <groupId>libAnda</groupId>
+  <artifactId>libAnda-util</artifactId>
+  <version>0.1.0</version>
   <packaging>jar</packaging>
 
-  <name>libanda-util</name>
-  <url>http://maven.apache.org</url>
+  <name>libAnda-util</name>
+  <url>https://github.com/Andanan/libAnda-util</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
